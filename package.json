@@ -1,0 +1,37 @@
+{
+  "author": "Stoic",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.1",
+    "mongoose-lean-virtuals": "^2.0.0",
+    "morgan": "^1.10.0",
+    "zod": "^4.0.5"
+  },
+  "description": "An ecommerce website.",
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/mongoose": "^5.11.96",
+    "@types/mongoose-lean-virtuals": "^0.5.6",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.0.10",
+    "concurrently": "^9.2.0",
+    "nodemon": "^3.1.10",
+    "typescript": "^5.8.3"
+  },
+  "license": "ISC",
+  "main": "server.js",
+  "name": "shophour",
+  "scripts": {
+    "dev": "concurrently -n TSC,DIST -c blue,yellow -k \"npm run tsc\" \"npm run dist\"",
+    "dist": "nodemon ./dist/server.js",
+    "tsc": "tsc --watch"
+  },
+  "type": "module",
+  "version": "1.0.0"
+}
