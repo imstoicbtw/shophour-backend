@@ -1,6 +1,8 @@
-import {Request, Response} from "express";
-import UserModel, {IUserRawDoc, TUser, TUserLean} from "../models/user.model.js";
+import { Request, Response } from "express";
+import UserModel, { IUserRawDoc, TUser, TUserLean } from "../models/user.model.js";
 import generateTokenUtil from "../utils/generate-token.util.js";
+import zodValidate from "../utils/zod-validate.util.js";
+import { loginUserReqBody, loginUserReqBodyType } from "../zod/requests/auth.zod.js";
 
 
 /**
@@ -9,8 +11,8 @@ import generateTokenUtil from "../utils/generate-token.util.js";
  * POST /auth/register/
  */
 export async function registerUser(req: Request, res: Response): Promise<void> {
-    const body: IUserRawDoc = {...req.body, role: "customer"};
-    const existingUser: TUser | null = await UserModel.findOne({email: body.email});
+    const body: IUserRawDoc = { ...req.body, role: "customer" };
+    const existingUser: TUser | null = await UserModel.findOne({ email: body.email });
     if (existingUser) {
         res.status(409);
         throw new Error("User with this email already exists!");
@@ -22,7 +24,7 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
     }
     res.cookie(
         "jwt",
-        generateTokenUtil({_id: user._id, role: user.role}),
+        generateTokenUtil({ _id: user._id, role: user.role }),
         {
             httpOnly: true,
             maxAge: (1000 * 60 * 15),
@@ -33,7 +35,7 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
     res.status(201).json({
         success: true,
         message: "Registration successful!",
-        user: {...user.toObject({virtuals: true}), password: "********"}
+        user: { ...user.toObject({ virtuals: true }), password: "********" }
     });
 }
 
@@ -44,8 +46,8 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
  * POST /auth/login/
  */
 export async function loginUser(req: Request, res: Response): Promise<void> {
-    const {email, password} = req.body;
-    const user: TUser | null = await UserModel.findOne({email});
+    const { email, password } = zodValidate<loginUserReqBodyType>(req.body, loginUserReqBody);
+    const user: TUser | null = await UserModel.findOne({ email });
     if (!user) {
         res.status(404);
         throw new Error("No user found with this email address!");
@@ -56,7 +58,7 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
     }
     res.cookie(
         "jwt",
-        generateTokenUtil({_id: user._id, role: user.role}),
+        generateTokenUtil({ _id: user._id, role: user.role }),
         {
             httpOnly: true,
             maxAge: (1000 * 60 * 15),
@@ -66,6 +68,6 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
     res.status(200).json({
         success: true,
         message: "Login successful!",
-        user: {...user.toObject({virtuals: true}), password: "********"}
+        user: { ...user.toObject({ virtuals: true }), password: "********" }
     });
 }

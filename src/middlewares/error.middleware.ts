@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ZodValidationError } from "../utils/error.util.js";
+import { ZodValidationError } from "../utils/zod-error.util.js";
 
 interface GlobalError extends Error, ZodValidationError {
     kind: string;
