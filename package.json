@@ -28,7 +28,7 @@
   "main": "server.js",
   "name": "shophour",
   "scripts": {
-    "dev": "concurrently -n TSC,DIST -c blue,yellow -k \"npm run tsc\" \"npm run dist\"",
+    "dev": "concurrently -n TSCW,DIST -c #5050FF,yellow -k \"npm run tsc\" \"npm run dist\"",
     "dist": "nodemon ./dist/server.js",
     "tsc": "tsc --watch"
   },

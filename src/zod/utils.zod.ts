@@ -23,13 +23,11 @@ export function zodString({
 } = {
         min: 1,
         max: Infinity,
-        length: Infinity,
     }) {
     return zod.string("This must be a string.")
         .trim()
-        .min(min as number, `This must be at least ${min} character(s) or more.`)
-        .max(max as number, `This must be ${max} character(s) or less.`)
-        .length(length as number, `This must be ${length} characters long.`)
+        .min(length || min as number, length ? `This must be ${length} character(s) long.` : `This must be ${min} character(s) or more.`)
+        .max(length || max as number, length ? `This must be ${length} character(s) long.` : `This must be ${max} character(s) or less.`)
 }
 
 
@@ -60,10 +58,10 @@ export const zodName = zod.object({
     firstName: zod.string("This must be a string.")
         .trim()
         .nonempty("This is required."),
-    lastName: zod.string("`lastName` must be a string.")
+    lastName: zod.string("This must be a string.")
         .trim()
         .nonempty("This is required."),
-});
+}, "This must be an object.");
 
 
 export const zodAddress = zod.object({
@@ -76,4 +74,4 @@ export const zodAddress = zod.object({
     state: zodString({ min: 3 }),
     pinCode: zodString({ min: 6 }),
     country: zodString({ min: 3 }),
-});
+}, "This must be an object.");

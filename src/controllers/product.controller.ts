@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ROLES } from "../constants.js";
 import ProductModel, { TProduct, TProductLean } from "../models/product.model.js";
-import { TProductReview } from "../models/subdocs/product-review.model.js";
+import { ProductReviewModel, TProductReview } from "../models/subdocs/product-review.model.js";
 
 
 /**
@@ -15,7 +15,7 @@ export async function createProduct(req: Request, res: Response): Promise<void> 
     await product.save();
     res.json({
         success: true,
-        message: "Product created successfully",
+        message: "Product created successfully.",
         data: product.toObject({ virtuals: true }),
     });
 }
@@ -153,12 +153,13 @@ export async function submitReview(req: Request, res: Response): Promise<void> {
         res.status(404);
         throw new Error("Product not found.");
     }
-    product.reviews.push(body);
+    const review: TProductReview = new ProductReviewModel(body);
+    product.reviews.push(review);
     await product.save();
     res.json({
         success: true,
         message: "Review submitted successfully.",
-        data: product.toObject({ virtuals: true }).reviews,
+        data: review.toObject({ virtuals: true }),
     });
 }
 

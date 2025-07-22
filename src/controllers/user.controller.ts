@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { ROLES } from "../constants.js";
 import AddressModel, { TAddress, TAddressLean } from "../models/subdocs/address.model.js";
 import UserModel, { TUser, TUserLean } from "../models/user.model.js";
+import { updatePasswordReqBodyType } from '../zod/requests/user.zod.js';
 
 
 /**
@@ -55,14 +56,7 @@ export async function getCurrentUser(req: Request, res: Response): Promise<void>
  */
 export async function updateCurrentUserDetails(req: Request, res: Response): Promise<void> {
     const { user, body } = req;
-    const { name, email } = body;
-    user.set({
-        name: {
-            firstName: name?.firstName || user.name.firstName,
-            lastName: name?.lastName || user.name.lastName
-        },
-        email: email || user.email
-    });
+    user.set(body);
     const updatedUser: TUser = await user.save();
     res.json({
         success: true,
@@ -87,7 +81,7 @@ export async function updateCurrentUserAvatar(req: Request, res: Response): Prom
  * PATCH /api/users/current-user/password/
  */
 export async function updatePassword(req: Request, res: Response): Promise<void> {
-    const { oldPassword, newPassword } = req.body;
+    const { oldPassword, newPassword } = req.body as updatePasswordReqBodyType;
     const user: TUser | null = await UserModel.findById(req.user.id);
     if (!user) {
         res.status(404);
@@ -135,13 +129,9 @@ export async function addNewAddress(req: Request, res: Response): Promise<void> 
     const address: TAddress = new AddressModel(body);
     user.addresses.push(address);
     await user.save();
-    const addresses: TAddressLean[] = user.addresses.map((address: TAddress): TAddressLean => {
-        return address.toObject({ virtuals: true }) as unknown as TAddressLean;
-    });
     res.json({
         success: true,
         message: "Address added successfully!",
-        data: addresses
     });
 }
 

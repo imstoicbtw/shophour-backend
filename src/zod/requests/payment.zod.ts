@@ -1,4 +1,4 @@
-import { z as zod } from "zod";
+import { zod } from "../../exports.js";
 import { zodMongooseObjectId, zodNumber, zodString } from "../utils.zod.js";
 
 
@@ -10,11 +10,9 @@ export const createNewPaymentReqBody = zod.object({
     status: zod.enum(["pending", "completed", "failed"], "This is not valid."),
     transactionId: zodString(),
     paymentGateway: zod.enum(["razorpay", "cod"], "This is not valid."),
-});
-export type createNewPaymentReqBodyType = zod.infer<typeof createNewPaymentReqBody>;
+}, "This must be an object.");
 
 
 export const updatePaymentReqBody = zod.object({
     status: zod.enum(["pending", "completed", "failed"], "This is not valid."),
-});
-export type updatePaymentReqBodyType = zod.infer<typeof updatePaymentReqBody>;
+}, "This must be an object.");

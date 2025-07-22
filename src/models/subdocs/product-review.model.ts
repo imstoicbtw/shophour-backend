@@ -1,4 +1,4 @@
-import {HydratedDocument, Model, Schema, Types} from "mongoose";
+import { HydratedDocument, model, Model, Schema, Types } from "mongoose";
 
 export interface IProductReviewRawDoc {
     title: string;
@@ -34,4 +34,10 @@ export const productReviewSchema: Schema = new Schema<IProductReviewRawDoc, TPro
         ref: "User",
         required: [true, "User is required"],
     },
-}, {timestamps: true});
+}, { timestamps: true });
+
+export const ProductReviewModel: TProductReviewModel = model<
+    IProductReviewRawDoc,
+    TProductReviewModel,
+    IProductReviewMethods
+>("ProductReview", productReviewSchema);

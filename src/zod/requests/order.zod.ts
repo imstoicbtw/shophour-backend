@@ -1,4 +1,4 @@
-import { z as zod } from "zod";
+import { zod } from "../../exports.js";
 import { zodAddress, zodMongooseObjectId, zodNumber, zodString } from "../utils.zod.js";
 
 
@@ -16,11 +16,9 @@ export const createOrderReqBody = zod.object({
     paymentStatus: zod.enum(["pending", "completed", "failed"], "This is not valid."),
     paymentMethod: zodString(),
     shippingAddress: zodAddress,
-});
-export type createOrderReqBodyType = zod.infer<typeof createOrderReqBody>;
+}, "This must be an object.");
 
 
 export const updateOrderReqBody = zod.object({
     status: zod.enum(["pending", "processing", "shipped", "delivered", "cancelled"], "This is not valid."),
-});
-export type updateOrderReqBodyType = zod.infer<typeof updateOrderReqBody>;
+}, "This must be an object.");

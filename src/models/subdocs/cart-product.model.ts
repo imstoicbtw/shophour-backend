@@ -1,4 +1,4 @@
-import { HydratedDocument, Model, Schema, Types } from "mongoose";
+import { HydratedDocument, model, Model, Schema, Types } from "mongoose";
 
 interface ICartProductRawDoc {
     product: Types.ObjectId;
@@ -25,3 +25,10 @@ export const cartProductSchema: Schema = new Schema<ICartProductRawDoc, TCartPro
         required: [true, "Item quantity is required."],
     }
 });
+
+
+export const CartProductModel: TCartProductModel = model<
+    ICartProductRawDoc,
+    TCartProductModel,
+    ICartProductMethods
+>("CartProduct", cartProductSchema);

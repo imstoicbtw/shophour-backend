@@ -14,8 +14,8 @@ export interface IUserRawDoc {
     password: string;
     role: string;
     addresses: Array<TAddress>;
-    avatar?: Types.ObjectId;
-    cartProducts?: Array<TCartProduct>;
+    avatar: Types.ObjectId;
+    cartProducts: Array<TCartProduct>;
 }
 
 interface IUserMethods {
@@ -57,11 +57,13 @@ const userSchema: Schema = new Schema<IUserRawDoc, TUserModel, IUserMethods, {},
     },
     addresses: {
         type: [addressSchema],
+        default: [],
     },
     cartProducts: {
         type: [cartProductSchema],
+        default: []
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
 // Plugins
 userSchema.plugin(mongooseLeanVirtuals);

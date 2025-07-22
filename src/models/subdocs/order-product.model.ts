@@ -1,4 +1,4 @@
-import { HydratedDocument, Model, Schema, Types } from "mongoose";
+import { HydratedDocument, model, Model, Schema, Types } from "mongoose";
 
 interface IOrderProductRawDoc {
     product: Types.ObjectId;
@@ -16,7 +16,7 @@ interface IOrderProductVirtuals {
 type TOrderProductModel = Model<IOrderProductRawDoc, {}, IOrderProductMethods, IOrderProductVirtuals>;
 export type TOrderProduct = HydratedDocument<IOrderProductRawDoc, IOrderProductMethods & IOrderProductVirtuals>;
 
-export const cartProductSchema: Schema = new Schema<IOrderProductRawDoc, TOrderProductModel, IOrderProductMethods, {}, IOrderProductVirtuals>({
+export const orderProductSchema: Schema = new Schema<IOrderProductRawDoc, TOrderProductModel, IOrderProductMethods, {}, IOrderProductVirtuals>({
     product: {
         type: Schema.Types.ObjectId,
         ref: "Product",
@@ -35,3 +35,9 @@ export const cartProductSchema: Schema = new Schema<IOrderProductRawDoc, TOrderP
         required: [true, "Item quantity is required."],
     }
 });
+
+export const OrderProductModel: TOrderProductModel = model<
+    IOrderProductRawDoc,
+    TOrderProductModel,
+    IOrderProductMethods
+>("OrderProduct", orderProductSchema);

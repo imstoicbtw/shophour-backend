@@ -1,5 +1,5 @@
-import {HydratedDocument, model, Model, Schema} from "mongoose";
-import {nameSchema, TName} from "./name.model.js";
+import { HydratedDocument, model, Model, Schema } from "mongoose";
+import { nameSchema, TName } from "./name.model.js";
 
 interface IAddressRawDoc {
     name: TName;
@@ -69,4 +69,4 @@ addressSchema.virtual("fullAddress")
         return `${this.building}, ${this.street}, ${this.city}, ${this.state}, ${this.country} - ${this.pinCode}`;
     });
 
-export default model<IAddressRawDoc, TAddressModel>("Address", addressSchema);
+export default model<IAddressRawDoc, TAddressModel, IAddressMethods>("Address", addressSchema);

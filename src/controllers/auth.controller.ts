@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
-import UserModel, { IUserRawDoc, TUser, TUserLean } from "../models/user.model.js";
+import UserModel, { IUserRawDoc, TUser } from "../models/user.model.js";
 import generateTokenUtil from "../utils/generate-token.util.js";
-import zodValidate from "../utils/zod-validate.util.js";
-import { loginUserReqBody, loginUserReqBodyType } from "../zod/requests/auth.zod.js";
+import { loginUserReqBodyType, registerUserReqBodyType } from "../zod/requests/auth.zod.js";
 
 
 /**
@@ -11,7 +10,7 @@ import { loginUserReqBody, loginUserReqBodyType } from "../zod/requests/auth.zod
  * POST /auth/register/
  */
 export async function registerUser(req: Request, res: Response): Promise<void> {
-    const body: IUserRawDoc = { ...req.body, role: "customer" };
+    const body: registerUserReqBodyType = { ...req.body, role: "customer" };
     const existingUser: TUser | null = await UserModel.findOne({ email: body.email });
     if (existingUser) {
         res.status(409);
@@ -46,7 +45,7 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
  * POST /auth/login/
  */
 export async function loginUser(req: Request, res: Response): Promise<void> {
-    const { email, password } = zodValidate<loginUserReqBodyType>(req.body, loginUserReqBody);
+    const { email, password } = req.body as loginUserReqBodyType;
     const user: TUser | null = await UserModel.findOne({ email });
     if (!user) {
         res.status(404);

@@ -1,4 +1,4 @@
-import {HydratedDocument, Model, Schema} from "mongoose";
+import { HydratedDocument, model, Model, Schema } from "mongoose";
 
 interface INameRawDoc {
     firstName: string;
@@ -30,3 +30,10 @@ nameSchema.virtual("fullName")
     .get(function (this: TName): string {
         return `${this.firstName} ${this.lastName}`
     });
+
+
+export const NameModel: TNameModel = model<
+    INameRawDoc,
+    TNameModel,
+    INameMethods
+>("Name", nameSchema);
