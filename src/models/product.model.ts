@@ -1,5 +1,5 @@
-import {HydratedDocument, Model, model, Schema, Types} from "mongoose";
-import {TProductReview} from "./subdocs/product-review.model.js";
+import { HydratedDocument, Model, model, Schema, Types } from "mongoose";
+import { TProductReview } from "./subdocs/product-review.model.js";
 
 interface IProductRawDoc {
     name: string;
@@ -83,7 +83,7 @@ const productSchema: Schema = new Schema<IProductRawDoc, TProductModel, IProduct
         ref: "Review",
         default: [],
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
 productSchema.virtual("amountSaved")
     .get(function (this: TProduct): number {
@@ -92,4 +92,4 @@ productSchema.virtual("amountSaved")
     });
 
 
-export default model<IProductRawDoc, TProductModel, IProductMethods>("Product", productSchema);
+export const ProductModel: TProductModel = model<IProductRawDoc, TProductModel, IProductMethods>("Product", productSchema);

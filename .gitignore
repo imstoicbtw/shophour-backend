@@ -2,6 +2,7 @@ node_modules
 dist
 .env
 Roadmap.txt
+Todo.txt
 .vscode
 .idea
 a.js

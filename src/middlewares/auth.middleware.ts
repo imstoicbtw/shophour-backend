@@ -1,16 +1,16 @@
-import {NextFunction, Request, Response} from "express";
+import { NextFunction, Request, Response } from "express";
 import Jwt from "jsonwebtoken";
-import UserModel, {TUser} from "../models/user.model.js";
-import {jwtPayload} from "../types/jwt.types.js";
+import { TUser, UserModel } from "../models/user.model.js";
+import { jwtPayload } from "../types/jwt.types.js";
 
 
 export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
-    const {jwt: token} = req.cookies;
+    const { jwt: token } = req.cookies;
     if (!token) {
         res.status(401);
         throw new Error("You are currently not logged in!");
     }
-    const {_id} = Jwt.verify(token, process.env.JWT_SECRET!) as jwtPayload;
+    const { _id } = Jwt.verify(token, process.env.JWT_SECRET!) as jwtPayload;
     const user: Omit<TUser, "password"> | null = await UserModel.findById(_id, ["-password"]);
     if (!user) {
         res.status(404);

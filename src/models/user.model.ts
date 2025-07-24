@@ -4,7 +4,7 @@ import { HydratedDocument, Model, model, Schema, Types } from "mongoose";
 import mongooseLeanVirtuals from "mongoose-lean-virtuals";
 import { ROLES } from "../constants.js";
 import { addressSchema, TAddress } from "./subdocs/address.model.js";
-import { cartProductSchema, TCartProduct } from "./subdocs/cart-product.model.js";
+import { cartItemSchema, TCartItem } from "./subdocs/cart-item.model.js";
 import { nameSchema, TName } from "./subdocs/name.model.js";
 
 
@@ -15,7 +15,7 @@ export interface IUserRawDoc {
     role: string;
     addresses: Array<TAddress>;
     avatar: Types.ObjectId;
-    cartProducts: Array<TCartProduct>;
+    cartItems: Array<TCartItem>;
 }
 
 interface IUserMethods {
@@ -59,8 +59,8 @@ const userSchema: Schema = new Schema<IUserRawDoc, TUserModel, IUserMethods, {},
         type: [addressSchema],
         default: [],
     },
-    cartProducts: {
-        type: [cartProductSchema],
+    cartItems: {
+        type: [cartItemSchema],
         default: []
     }
 }, { timestamps: true });
@@ -86,4 +86,4 @@ userSchema.pre("save", async function (this: TUser, next: Function): Promise<voi
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-export default model<IUserRawDoc, TUserModel>("User", userSchema);
+export const UserModel: TUserModel = model<IUserRawDoc, TUserModel>("User", userSchema);

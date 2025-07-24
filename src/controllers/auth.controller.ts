@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
-import UserModel, { IUserRawDoc, TUser } from "../models/user.model.js";
+import { TUser, UserModel } from "../models/user.model.js";
 import generateTokenUtil from "../utils/generate-token.util.js";
 import { loginUserReqBodyType, registerUserReqBodyType } from "../zod/requests/auth.zod.js";
+
+
+// TODO: Implement hybrid authentication for login, logout, and registration.
 
 
 /**
@@ -68,5 +71,19 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
         success: true,
         message: "Login successful!",
         user: { ...user.toObject({ virtuals: true }), password: "********" }
+    });
+}
+
+
+/**
+ * Logout user.
+ * @access Any authenticated user.
+ * POST /api/auth/logout/
+ */
+export async function logoutUser(req: Request, res: Response): Promise<void> {
+    res.clearCookie("jwt");
+    res.json({
+        success: true,
+        message: "Logged out successfully!",
     });
 }

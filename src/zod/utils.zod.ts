@@ -26,24 +26,21 @@ export function zodString({
     }) {
     return zod.string("This must be a string.")
         .trim()
-        .min(length || min as number, length ? `This must be ${length} character(s) long.` : `This must be ${min} character(s) or more.`)
-        .max(length || max as number, length ? `This must be ${length} character(s) long.` : `This must be ${max} character(s) or less.`)
+        .min(length ?? min as number, length ? `This must be ${length} character(s) long.` : `This must be ${min} character(s) or more.`)
+        .max(length ?? max as number, length ? `This must be ${length} character(s) long.` : `This must be ${max} character(s) or less.`)
 }
 
 
 export function zodNumber({
     min,
-    max,
+    max
 }: {
     min?: number;
     max?: number;
-} = {
-        min: 0,
-        max: Infinity,
-    }) {
+} = {}) {
     return zod.number("This must be a number.")
-        .min(min as number, `This cannot be less than ${min}.`)
-        .max(max as number, `This cannot be more than ${max}.`)
+        .min(min ?? 0, `This cannot be less than ${min}.`)
+        .max(max ?? Infinity, `This cannot be more than ${max}.`)
 }
 
 

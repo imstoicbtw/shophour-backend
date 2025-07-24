@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { loginUser, registerUser } from "../controllers/auth.controller.js";
+import { loginUser, logoutUser, registerUser } from "../controllers/auth.controller.js";
+import { authenticate } from '../middlewares/auth.middleware.js';
 import { validateBody } from '../middlewares/validate-body.middleware.js';
 import { loginUserReqBody, registerUserReqBody } from '../zod/requests/auth.zod.js';
 
@@ -15,4 +16,10 @@ authRouter.route('/login')
     .post(
         validateBody(loginUserReqBody),
         loginUser
+    );
+
+authRouter.route("/logout")
+    .post(
+        authenticate,
+        logoutUser
     );

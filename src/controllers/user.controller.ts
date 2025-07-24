@@ -1,9 +1,13 @@
 import { Request, Response } from 'express';
+import { boolean } from 'zod';
 import { ROLES } from "../constants.js";
 import AddressModel, { TAddress, TAddressLean } from "../models/subdocs/address.model.js";
-import UserModel, { TUser, TUserLean } from "../models/user.model.js";
+import { CartItemModel, TCartItem, TCartItemLean } from '../models/subdocs/cart-item.model.js';
+import { TUser, TUserLean, UserModel } from "../models/user.model.js";
 import { updatePasswordReqBodyType } from '../zod/requests/user.zod.js';
 
+
+// ~ ADMIN ROUTES 
 
 /**
  * Get all customers.
@@ -14,7 +18,7 @@ export async function getCustomers(req: Request, res: Response): Promise<void> {
     const customers: Array<TUserLean> = await UserModel.find({ role: ROLES.Customer }, ["-password"]).lean({ virtuals: true });
     res.json({
         success: true,
-        message: `${customers.length} customer${customers.length === 1 ? "" : "s"} found.`,
+        message: `${customers.length} customer(s) found.`,
         data: customers
     });
 }
@@ -29,11 +33,13 @@ export async function getManagers(req: Request, res: Response): Promise<void> {
     const managers: Array<TUserLean> = await UserModel.find({ role: ROLES.Manager }, ["-password"]).lean({ virtuals: true });
     res.json({
         success: true,
-        message: `${managers.length} manager${managers.length === 1 ? "" : "s"} found.`,
+        message: `${managers.length} manager(s) found.`,
         data: managers
     });
 }
 
+
+// ~ USER 
 
 /**
  * Get the current user.
@@ -101,6 +107,8 @@ export async function updatePassword(req: Request, res: Response): Promise<void>
 }
 
 
+// ~ ADDRESSES 
+
 /**
  * Get all addresses.
  * @access Current authenticated user.
@@ -148,7 +156,7 @@ export async function deleteMyAddress(req: Request, res: Response): Promise<void
         res.status(404);
         throw new Error("Address not found!");
     }
-    user.addresses = user.addresses.filter((address: TAddress): boolean => {
+    user.addresses = user.addresses.filter((address): boolean => {
         return address.id !== req.body.id;
     });
     await user.save();
@@ -159,5 +167,120 @@ export async function deleteMyAddress(req: Request, res: Response): Promise<void
         success: true,
         message: "Address deleted successfully!",
         data: addresses
+    });
+}
+
+
+/**
+ * Update address by id.
+ * @access Any authenticated user.
+ * PATCH /api/users/current-user/addresses/:addressId
+ */
+export async function updateMyAddress(req: Request, res: Response): Promise<void> {
+    const { user, params, body } = req;
+    const address: TAddress | undefined = user.addresses.find((address): boolean => address.id === params.addressId);
+    if (!address) {
+        res.status(404);
+        throw new Error("Address not found!");
+    }
+    address.set(body);
+    await user.save();
+    res.json({
+        success: true,
+        message: "Address updated successfully.",
+        data: address.toObject({ virtuals: true }),
+    });
+}
+
+
+// ~ CART 
+
+/**
+ * Get user's cart.
+ * @access Any authenticated user.
+ * GET /api/users/current-user/cart/
+ */
+export async function getCart(req: Request, res: Response): Promise<void> {
+    const { user } = req;
+    const cartItems: Array<TCartItemLean> = user.cartItems.map((item): TCartItemLean => item.toObject({ virtuals: true }));
+    res.json({
+        success: true,
+        message: `${cartItems.length} cart item(s) found.`,
+        data: cartItems
+    });
+}
+
+
+/**
+ * Add item to user's cart.
+ * @access Any authenticated user.
+ * POST /api/users/current-user/cart/
+ */
+export async function addToCart(req: Request, res: Response): Promise<void> {
+    const { user, body } = req;
+    const cartItem: TCartItem = new CartItemModel(body);
+    user.cartItems.push(cartItem);
+    const result: TUser = await user.save();
+    res.json({
+        success: true,
+        message: "Item added to cart.",
+        data: result.cartItems.map((item): TCartItemLean => item.toObject({ virtuals: true })),
+    });
+}
+
+
+/**
+ * Update cart item quantity.
+ * @access Any authenticated user.
+ * PATCH /api/users/current-user/cart/:cartItemId/
+ */
+export async function updateCartItemQuantity(req: Request, res: Response): Promise<void> {
+    const { user, body, params } = req;
+    const cartItem: TCartItem | undefined = user.cartItems.find((item): boolean => item.id === params.cartItemId);
+    if (!cartItem) {
+        res.status(404);
+        throw new Error("Cart item not found.");
+    }
+    cartItem.set("quantity", body.quantity);
+    const result: TUser = await user.save();
+    res.json({
+        success: true,
+        message: "Item quantity updated..",
+        data: result.cartItems.map((item): TCartItemLean => item.toObject({ virtuals: true })),
+    });
+}
+
+
+/**
+ * Remove item from cart.
+ * @access Any authenticated user.
+ * DELETE /api/users/current-user/cart/:cartItemId/
+ */
+export async function removeItemFromCart(req: Request, res: Response): Promise<void> {
+    const { user, params } = req;
+    const cartItems: Array<TCartItem> = user.cartItems.filter((item): boolean => item.id !== params.cartItemId);
+    user.set({ cartItems });
+    const result: TUser = await user.save();
+    res.json({
+        success: true,
+        message: "Item removed from cart.",
+        data: result.cartItems.map((item): TCartItemLean => item.toObject({ virtuals: true })),
+    });
+}
+
+
+/**
+ * Clear cart.
+ * @access Any authenticated user.
+ * DELETE /api/users/current-user/cart/
+ */
+export async function clearCart(req: Request, res: Response): Promise<void> {
+    const { user } = req;
+    user.set({ cartItems: [] });
+    const result: TUser = await user.save();
+    res.json({
+        success: true,
+        message: "Cart cleared successfully.",
+        data: result.cartItems.map((item): TCartItemLean => item.toObject({ virtuals: true })),
     });
 }

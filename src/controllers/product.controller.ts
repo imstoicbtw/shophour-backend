@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { ROLES } from "../constants.js";
-import ProductModel, { TProduct, TProductLean } from "../models/product.model.js";
+import { ProductModel, TProduct, TProductLean } from "../models/product.model.js";
 import { ProductReviewModel, TProductReview } from "../models/subdocs/product-review.model.js";
 
 

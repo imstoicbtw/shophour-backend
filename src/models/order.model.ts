@@ -1,7 +1,7 @@
 import { HydratedDocument, Model, model, Schema, Types } from "mongoose";
 import { addressSchema, TAddress } from "./subdocs/address.model.js";
-import { cartProductSchema } from "./subdocs/cart-product.model.js";
-import { TOrderProduct } from "./subdocs/order-product.model.js";
+import { cartItemSchema } from "./subdocs/cart-item.model.js";
+import { TOrderProduct } from "./subdocs/order-item.model.js";
 
 
 interface IOrderRawDoc {
@@ -31,7 +31,7 @@ const orderSchema: Schema = new Schema<IOrderRawDoc, TOrderModel, IOrderMethods,
         required: [true, "User is required."],
     },
     products: {
-        type: [cartProductSchema],
+        type: [cartItemSchema],
         required: [true, "Ordered product is required."],
     },
     totalAmount: {

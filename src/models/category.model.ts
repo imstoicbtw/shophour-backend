@@ -1,4 +1,4 @@
-import {HydratedDocument, Model, model, Schema, Types} from "mongoose";
+import { HydratedDocument, Model, model, Schema, Types } from "mongoose";
 
 interface ICategoryRawDoc {
     name: string;
@@ -14,6 +14,7 @@ interface ICategoryVirtuals {
 
 type TCategoryModel = Model<ICategoryRawDoc, {}, ICategoryMethods, ICategoryVirtuals>;
 export type TCategory = HydratedDocument<ICategoryRawDoc, ICategoryMethods & ICategoryVirtuals>;
+export type TCategoryLean = ICategoryRawDoc & ICategoryVirtuals;
 
 const categorySchema: Schema = new Schema<ICategoryRawDoc, TCategoryModel, ICategoryMethods, {}, ICategoryVirtuals>({
     name: {
@@ -28,7 +29,7 @@ const categorySchema: Schema = new Schema<ICategoryRawDoc, TCategoryModel, ICate
         type: Schema.Types.ObjectId,
         ref: "Category",
     }
-}, {timestamps: true});
+}, { timestamps: true });
 
 
-export default model<ICategoryRawDoc, TCategoryModel, ICategoryMethods>("Category", categorySchema);
+export const CategoryModel: TCategoryModel = model<ICategoryRawDoc, TCategoryModel, ICategoryMethods>("Category", categorySchema);
