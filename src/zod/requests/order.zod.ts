@@ -3,7 +3,6 @@ import { zodAddress, zodMongooseObjectId, zodNumber, zodString } from "../utils.
 
 
 export const createOrderReqBody = zod.object({
-    user: zodMongooseObjectId(),
     products: zod.array(zod.object({
         product: zodMongooseObjectId(),
         price: zodNumber(),
@@ -17,6 +16,7 @@ export const createOrderReqBody = zod.object({
     paymentMethod: zodString(),
     shippingAddress: zodAddress,
 }, "This must be an object.");
+export type createOrderReqBodyType = zod.infer<typeof createOrderReqBody>;
 
 
 export const updateOrderReqBody = zod.object({

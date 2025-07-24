@@ -1,22 +1,22 @@
 import { HydratedDocument, model, Model, Schema, Types } from "mongoose";
 
-interface IOrderProductRawDoc {
+interface IOrderItemRawDoc {
     product: Types.ObjectId;
     price: number;
     savedAmount: number;
     quantity: number;
 }
 
-interface IOrderProductMethods {
+interface IOrderItemMethods {
 }
 
-interface IOrderProductVirtuals {
+interface IOrderItemVirtuals {
 }
 
-type TOrderProductModel = Model<IOrderProductRawDoc, {}, IOrderProductMethods, IOrderProductVirtuals>;
-export type TOrderProduct = HydratedDocument<IOrderProductRawDoc, IOrderProductMethods & IOrderProductVirtuals>;
+type TOrderItemModel = Model<IOrderItemRawDoc, {}, IOrderItemMethods, IOrderItemVirtuals>;
+export type TOrderItem = HydratedDocument<IOrderItemRawDoc, IOrderItemMethods & IOrderItemVirtuals>;
 
-export const orderProductSchema: Schema = new Schema<IOrderProductRawDoc, TOrderProductModel, IOrderProductMethods, {}, IOrderProductVirtuals>({
+export const orderItemSchema: Schema = new Schema<IOrderItemRawDoc, TOrderItemModel, IOrderItemMethods, {}, IOrderItemVirtuals>({
     product: {
         type: Schema.Types.ObjectId,
         ref: "Product",
@@ -36,8 +36,8 @@ export const orderProductSchema: Schema = new Schema<IOrderProductRawDoc, TOrder
     }
 });
 
-export const OrderProductModel: TOrderProductModel = model<
-    IOrderProductRawDoc,
-    TOrderProductModel,
-    IOrderProductMethods
->("OrderProduct", orderProductSchema);
+export const OrderItemModel: TOrderItemModel = model<
+    IOrderItemRawDoc,
+    TOrderItemModel,
+    IOrderItemMethods
+>("OrderItem", orderItemSchema);

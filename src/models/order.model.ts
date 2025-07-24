@@ -1,12 +1,12 @@
 import { HydratedDocument, Model, model, Schema, Types } from "mongoose";
 import { addressSchema, TAddress } from "./subdocs/address.model.js";
 import { cartItemSchema } from "./subdocs/cart-item.model.js";
-import { TOrderProduct } from "./subdocs/order-item.model.js";
+import { TOrderItem } from "./subdocs/order-item.model.js";
 
 
 interface IOrderRawDoc {
     user: Types.ObjectId;
-    products: Array<TOrderProduct>;
+    products: Array<TOrderItem>;
     totalAmount: number;
     savedAmount: number;
     status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
@@ -23,6 +23,7 @@ interface IOrderVirtuals {
 
 type TOrderModel = Model<IOrderRawDoc, {}, IOrderMethods, IOrderVirtuals>;
 export type TOrder = HydratedDocument<IOrderRawDoc, IOrderMethods & IOrderVirtuals>;
+export type TOrderLean = IOrderRawDoc & IOrderVirtuals;
 
 const orderSchema: Schema = new Schema<IOrderRawDoc, TOrderModel, IOrderMethods, {}, IOrderVirtuals>({
     user: {
@@ -67,4 +68,4 @@ const orderSchema: Schema = new Schema<IOrderRawDoc, TOrderModel, IOrderMethods,
 }, { timestamps: true });
 
 
-export default model<IOrderRawDoc, TOrderModel, IOrderMethods>("Order", orderSchema);
+export const OrderModel: TOrderModel = model<IOrderRawDoc, TOrderModel, IOrderMethods>("Order", orderSchema);
